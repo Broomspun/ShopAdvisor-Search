@@ -48,7 +48,7 @@ $product_categories = array(
             <input type="hidden" name="total_pages" id="total_pages" value="0"/>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label" for="shopadvisor_api_token">API key<sup>*</sup></label>
+                <label class="col-sm-2 control-label" for="shopadvisor_apikey">API key<sup>*</sup></label>
                 <div class="col-sm-3">
                     <input class="form-control" type="text" id="shopadvisor_apikey"
                            name="shopadvisor_apikey" required
@@ -56,9 +56,9 @@ $product_categories = array(
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label" for="shopadvisor_userlocation">User Locations<sup>*</sup></label>
+                <label class="col-sm-2 control-label" for="shopadvisor_ul">User Locations<sup>*</sup></label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control"  id="shopadvisor_userlocation" name="shopadvisor_userlocation" required
+                    <input type="text" class="form-control"  id="shopadvisor_ul" name="shopadvisor_ul" required
                            placeholder="01720">
                     <p>Allowable values include zip code or comma separated latitude,longitude pair.</p>
                 </div>
