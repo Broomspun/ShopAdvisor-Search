@@ -79,6 +79,15 @@ class ShopAdvisor_Search_Admin {
     }
 
     /**
+     * Get products from ShopAdvisor Search API.
+     *
+     * @since    1.0.0
+     */
+
+    public function getProductsFromShopAdvisor(){
+
+    }
+    /**
      * Display Seeting  for the admin area.
      *
      * @since    1.0.0
@@ -90,6 +99,8 @@ class ShopAdvisor_Search_Admin {
 
         require_once ('partials/shopadvisor-search-admin-display.php');
     }
+
+
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -134,6 +145,7 @@ class ShopAdvisor_Search_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shopadvisor-search-admin.js', array( 'jquery' ), $this->version, false );
+        wp_localize_script($this->plugin_name, 'ajax_parms', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 	}
 
