@@ -23,6 +23,12 @@
  * Text Domain:       shopadvisor-search
  * Domain Path:       /languages
  */
+/**
+ * Required functions
+ */
+if ( ! function_exists( 'woothemes_queue_update' ) || ! function_exists( 'is_woocommerce_active' ) ) {
+    require_once( 'woo-includes/woo-functions.php' );
+}
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {

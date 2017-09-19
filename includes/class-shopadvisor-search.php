@@ -205,6 +205,33 @@ class ShopAdvisor_Search {
 		return $this->loader;
 	}
 
+    /**
+     * Called when WooCommerce is inactive or running and out-of-date version to display an inactive notice.
+     *
+     * @since 1.0.0
+     */
+    public static function woocommerce_inactive_notice() {
+        if ( current_user_can( 'activate_plugins' ) ) :
+            if ( ! is_woocommerce_active() ) : ?>
+                <div id="message" class="error">
+                    <p><?php
+                        $install_url = wp_nonce_url( add_query_arg( array( 'action' => 'install-plugin', 'plugin' => 'woocommerce' ), admin_url( 'update.php' ) ), 'install-plugin_woocommerce' );
+
+                        // translators: 1$-2$: opening and closing <strong> tags, 3$-4$: link tags, takes to woocommerce plugin on wp.org, 5$-6$: opening and closing link tags, leads to plugins.php in admin
+                        printf( esc_html__( '%1$sShopAdvisor Search is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for SuperAdvisor Search to work. Please %5$sinstall & activate WooCommerce &raquo;%6$s',  'shopadvisor-search' ), '<strong>', '</strong>', '<a href="http://wordpress.org/extend/plugins/woocommerce/">', '</a>', '<a href="' .  esc_url( $install_url ) . '">', '</a>' ); ?>
+                    </p>
+                </div>
+            <?php elseif ( version_compare( get_option( 'woocommerce_db_version' ), '2.4', '<' ) ) : ?>
+                <div id="message" class="error">
+                    <p><?php
+                        // translators: 1$-2$: opening and closing <strong> tags, 3$-4$: opening and closing link tags, leads to plugin admin
+                        printf( esc_html__( '%1$sShopAdvisor Search is inactive.%2$s This version of ShopAdvisor Search requires WooCommerce 2.4 or newer. Please %3$supdate WooCommerce to version 2.4 or newer &raquo;%4$s', 'shopadvisor-search' ), '<strong>', '</strong>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' ); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+        <?php endif;
+    }
+
 	/**
 	 * Retrieve the version number of the plugin.
 	 *

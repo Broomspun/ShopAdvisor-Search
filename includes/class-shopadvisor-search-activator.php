@@ -30,7 +30,10 @@ class ShopAdvisor_Search_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+        if ( ! is_woocommerce_active() || version_compare( get_option( 'woocommerce_db_version' ), '2.5', '<' ) ) {
+            add_action( 'admin_notices', 'ShopAdvisor_Search::woocommerce_inactive_notice' );
+            return;
+        }
 	}
 
 }
