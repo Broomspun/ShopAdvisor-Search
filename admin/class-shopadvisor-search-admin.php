@@ -135,10 +135,66 @@ class ShopAdvisor_Search_Admin {
         $returnResult = curl_exec($ch);
         curl_close($ch);
 
-        $all_data = json_decode($returnResult, true);
+        $all_data = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
 
-        $data['raw'] = $all_data;
+        $data['count'] = $all_data['count'];
         $data['url'] = $url;
+
+        $all_results = $all_data['results'];
+        if(isset($all_data['request']['productCategory']))
+            $category = $all_data['request']['productCategory'];
+
+        $items = array();
+
+        $data['raw'] = $all_results;
+
+        foreach ($all_results as $result){
+            $product = $result['SearchResult'];
+            $id = $product['product']['id'];
+            $items[] = $id;
+
+            $data[$id]['lastUpdated'] = $product['lastUpdated'];
+            $data[$id]['thumb_image'] = $product['product']['images'][0]['ImageInfo']['link'];
+            $data[$id]['large_image'] = $product['product']['images'][1]['ImageInfo']['link'];
+            $data[$id]['title'] = $product['product']['name'];
+            $data[$id]['descriptionLong'] = $product['product']['descriptionLong'];
+            $data[$id]['descriptionShort'] = $product['product']['descriptionShort'];
+            $data[$id]['url'] = $product['product']['url'];
+            $data[$id]['externalproductid'] = $product['product']['externalproductid'];
+            $data[$id]['sku'] = $product['product']['sku'];
+            $data[$id]['brand'] = $product['product']['brand'];
+            $data[$id]['manufacturerPartNumber'] = $product['product']['manufacturerPartNumber'];
+            $data[$id]['barcode'] = $product['product']['barcode'];
+            $data[$id]['productCategory'] = implode(',',$product['product']['productCategory']);
+            $data[$id]['productType'] = implode(',',$product['product']['productType']);
+            $data[$id]['msrpCurrency'] = $product['product']['msrpCurrency'];
+            $data[$id]['distance'] = $product['distance']['distance'];
+            $data[$id]['distance_unit'] = $product['distance']['units'];
+            $data[$id]['price'] = $product['price'];
+            $data[$id]['currency'] = $product['currency'];
+            $data[$id]['location_id'] = $product['location']['id'];
+            $data[$id]['address'] = array($product['location']['address']['country'],$product['location']['address']['city'],
+                $product['location']['address']['address1'],$product['location']['address']['state'],$product['location']['address']['postal']);
+            $data[$id]['distance'] = $product['location']['distance']['distance'];
+            $data[$id]['hours'] = $product['location']['hours'];
+            $data[$id]['location_lat_long'] = implode(',', array($product['location']['location']['latitude'],
+                                    $product['location']['location']['longitude'],));
+            $data[$id]['phone'] = $product['location']['phone'];
+            $data[$id]['retailer'] = array('id'=>$product['location']['retailer']['id'],
+                'name'=>$product['location']['retailer']['name'],
+                'logo'=>$product['location']['retailer']['logo'],
+                'logosq'=>$product['location']['retailer']['logosq'],);
+            $data[$id]['timezone'] = $product['location']['timezone'];
+            $data[$id]['retLocationId'] = $product['location']['retLocationId'];
+            $data[$id]['locName'] = $product['locName'];
+            $data[$id]['locName'] = $product['locName'];
+            $data[$id]['availability_url'] = $product['availability'];
+
+            if($data[$id]['productCategory']==null)
+                $data[$id]['productCategory'] = $category;
+        }
+
+        $_SESSION = $data;
 
         echo json_encode($data);
         wp_die();

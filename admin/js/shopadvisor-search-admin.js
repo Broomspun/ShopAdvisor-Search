@@ -137,6 +137,21 @@
             e.preventDefault();
             $('#pg_number').val(0);
 
+            var indicators = ['shopadvisor_pid','shopadvisor_q','shopadvisor_brand','shopadvisor_categories','shopadvisor_model','shopadvisor_name'];
+
+            var validate_input = false;
+            $.each(indicators,function (index, value) {
+                var temp = $('#'+value).val();
+                if(temp=='' || temp=='-1') return true;//continue
+                validate_input = true;
+                return false;//break;
+            });
+
+            if(!validate_input){
+                alert('Enter any value among productId, keywords, brand, category, model, and name');
+                return false;
+            }
+
             $.ajax({
                 type: 'POST',
                 dataType: 'json',
