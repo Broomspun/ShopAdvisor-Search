@@ -39,6 +39,16 @@ class ShopAdvisor_Search_Admin {
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
+	/**
+	 * key of ShopAdvisor Product Search API.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $version    The current version of this plugin.
+	 */
+	private $apiKey;
+
+
 
 	/**
 	 * Initialize the class and set its properties.
@@ -51,6 +61,11 @@ class ShopAdvisor_Search_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+		$this->apiKey = 'zZBDgi_Zyl5_IMQNjuSn_OvL3XFS0S_4';
+
+        $settings['apiKey'] = $this->apiKey;
+
+        update_option('shopadvisor-search-settings', $settings);
 
 	}
     /**
@@ -73,10 +88,7 @@ class ShopAdvisor_Search_Admin {
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
 
-        echo '<div class="wrap">';
-        echo '<h1 style="text-align: left;" class="col-sm-offset-2">ShopAdvisor Products Search API Setting & import Products</h1>';
-        echo '<hr/>';
-        echo '</div>';
+        require_once ('partials/shopadvisor-search-admin-display.php');
     }
 
 	/**
