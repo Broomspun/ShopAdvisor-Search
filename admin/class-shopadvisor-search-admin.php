@@ -53,6 +53,31 @@ class ShopAdvisor_Search_Admin {
 		$this->version = $version;
 
 	}
+    /**
+     * Create Admin menu for the admin area.
+     *
+     * @since    1.0.0
+     */
+
+	public function shopadvisor_search_admin_menu(){
+        add_menu_page('ShopAdvisor Search Settings', 'ShopAdvisor Search API Setup', 'manage_options', 'shopadvisor_search_setting', array($this, 'shopadvisor_search_setting'));
+    }
+
+    /**
+     * Display Seeting  for the admin area.
+     *
+     * @since    1.0.0
+     */
+    function shopadvisor_search_setting(){
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
+        echo '<div class="wrap">';
+        echo '<h1 style="text-align: left;" class="col-sm-offset-2">ShopAdvisor Products Search API Setting & import Products</h1>';
+        echo '<hr/>';
+        echo '</div>';
+    }
 
 	/**
 	 * Register the stylesheets for the admin area.
