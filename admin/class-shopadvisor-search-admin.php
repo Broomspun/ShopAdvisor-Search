@@ -83,9 +83,65 @@ class ShopAdvisor_Search_Admin {
      *
      * @since    1.0.0
      */
-
     public function getProductsFromShopAdvisor(){
 
+        //Check nonce
+        if (!isset($_POST['shopadvisor_import_nonce'])) {
+            exit(1);
+            return;
+        }
+
+        //Setting SESSION for saving products temporarily
+        if (empty($_SESSION)) {
+            session_start();
+        } else {
+            session_destroy();
+            session_start();
+        }
+
+        $apikey = $_POST['shopadvisor_apikey'];
+        $ul = $_POST['shopadvisor_ul'];
+
+        $api_url = "https://api.shopadvisor.com/v3.0/products?";
+
+        $parameters = array(
+            "apikey" => $apikey,
+            "requestorid" => 'c788a854-9d3c-11e7-87fc-1f63daee3ac0',
+            'userlocation' => $ul,
+        );
+        if(isset($_POST['shopadvisor_q']) && $_POST['shopadvisor_q']!=='')
+            $parameters['keywords'] = $_POST['shopadvisor_q'];
+
+        if(isset($_POST['category']) && $_POST['category']!='-1')
+            $parameters['productCategory'] = $_POST['category'];
+
+        $getdata = http_build_query($parameters);
+
+        $ch = curl_init();
+
+        $url = $api_url . $getdata;
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        $options = array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_DNS_USE_GLOBAL_CACHE => 0
+        );
+        curl_setopt_array($ch, $options);
+        $returnResult = curl_exec($ch);
+        curl_close($ch);
+
+        $all_data = json_decode($returnResult, true);
+
+        $data['raw'] = $all_data;
+        $data['url'] = $url;
+
+        echo json_encode($data);
+        wp_die();
     }
     /**
      * Display Seeting  for the admin area.

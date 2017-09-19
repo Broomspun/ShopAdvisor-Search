@@ -157,7 +157,7 @@
                 success: (function (res) {
                     $('button i.ajax_loading').removeClass('fa fa-refresh fa-spin fa-fw');
                     //processResult(res);
-                    $('#shopstyle-products-csv-file').fadeIn(1000);
+                    $('#shopadvisor-csv-file').fadeIn(1000);
                 })
 
             });

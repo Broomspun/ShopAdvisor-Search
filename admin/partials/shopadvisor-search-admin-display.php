@@ -75,7 +75,7 @@ $product_categories = array(
                 <div class="col-sm-3">
                     <select class="form-control" type="text" id="shopadvisor_categories"
                             name="shopadvisor_categories">
-                        <option>Choose any category</option>
+                        <option value="-1">Choose any category</option>
                         <?php
                         foreach ($product_categories as $category){
                             echo '<option value="'.$category.'">'.$category.'</option>';
