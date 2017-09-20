@@ -259,7 +259,7 @@ class ShopAdvisor_Search_Admin {
             $data['product'][$id]['productCategory'] = implode(',',$product['product']['productCategory']);
             $data['product'][$id]['productType'] = implode(',',$product['product']['productType']);
             $data['product'][$id]['msrpCurrency'] = $product['product']['msrpCurrency'];
-            $data['product'][$id]['distance'] = $product['distance']['distance'];
+            $data['product'][$id]['distance_from_use_location'] = $product['distance']['distance'];
             $data['product'][$id]['distance_unit'] = $product['distance']['units'];
             $data['product'][$id]['price'] = $product['price'];
             $data['product'][$id]['currency'] = $product['currency'];
