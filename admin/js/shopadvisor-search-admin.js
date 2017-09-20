@@ -77,19 +77,19 @@
 
             $('#shopadvisor_import_form #result').html('');
             var $html ='';
-            $html += '<table class="table table-bordered"><thead><tr class="success"><th ><input id="cb-select-all-1" type="checkbox"><span style="margin-left: 10px">Product</span></th><th>Product Information</th><th>Price($)</th><th>Location Info</th><th>Category</th></tr></thead>';
+            $html += '<table class="table table-bordered"><thead><tr class="success"><th ><input id="cb-select-all-1" type="checkbox"><span style="margin-left: 10px">Product</span></th><th>Product Information</th><th>Retailer</th><th>Location Info</th><th>Category</th></tr></thead>';
             $.each(response.product, function(key, value){
                 var $temp = '';
                 var $single_uploading_btn='';//
 
                 var $retailers='';
                 if(value.retailer!==undefined){
-                    $retailers += '<sp><span>id:'+value.retailer.id+'</span>&nbsp;&nbsp;';
-                    $retailers += '<span>name:'+value.retailer.name+'</span>&nbsp;&nbsp;';
+                    $retailers += '<sp><span>id:&nbsp;'+value.retailer.id+'</span>&nbsp;&nbsp;';
+                    $retailers += '<span>name:&nbsp;'+value.retailer.name+'</span>&nbsp;&nbsp;';
                     $retailers += '<span><img src="'+value.retailer.logo+'"/></span>';
                 }
 
-                $retailers +='<p><strong><em>Retailer assigned location id: </em></strong>'+value.retLocationId+'</p>'
+                $retailers +='<p><strong><em>Retailer assigned location id: </em></strong>&nbsp;'+value.retLocationId+'</p>'
 
                 var $location = '<p><Strong><em>Timezone: </em></Strong>'+value.timezone+'</p>';
                 $location += '<p><Strong><em>ShopAdvisor assigned location name: </em></Strong>'+value.locName+'</p>';
@@ -113,6 +113,7 @@
                     +'<td class="col-sm-4">'
                     +'<p><strong><em>Product ID: </em></strong>'+key+'</p>'
                     +'<p><Strong><em>Sku: </em></Strong>'+value['sku']+'</p>'
+                    +'<p><Strong><em>Price: </em></Strong>'+value.price+'</p>'
                     +'<p><Strong><em>External Product ID: </em></Strong>'+value.externalproductid+'</p>'
                     +'<p><Strong><em>Barcode: </em></Strong>'+value.barcode+'</p>'
                     +'<p><Strong><em>Title: </em></Strong>'+value['title']+'</p>'
@@ -122,9 +123,8 @@
                     +'<p><strong><em>External Link: </em></strong><a target="_blank" href="'+value.url+'">'+value['url']+'</a></p>'
                     +'<p><Strong><em>Availability: </em></Strong>'+value['quantityText']+'</p>'
                     +'<p><Strong><em>Last Updated: </em></Strong>'+value.lastUpdated+'</p>'
-                    +'<p><Strong><em>Retailer: </em></Strong>'+$retailers+'</p>'
-                    +'<td><p>'+value['price']+'</p><p>'+value['currency']+'</p></td>'
-                    +'<td class="col-sm-4">'+$location
+                    +'<td class="col-sm-3"><p><Strong><em>Retailer: </em></Strong>'+$retailers+'</p></td>'
+                    +'<td class="col-sm-3">'+$location
                     +'</td>'
                     +'<td>'+'<p>'+value['productCategory']+'</p></td>'
                     +'</tr>';
@@ -171,6 +171,8 @@
                     shopadvisor_pid: $('#shopadvisor_pid').val(),
                     maxPerRetailer: $('#maxPerRetailer').val(),
                     maxLocationsPerRetailer: $('#maxLocationsPerRetailer').val(),
+                    locationId: $('#locationId').val(),
+                    retailerId: $('#retailerId').val(),
                     total_calculation: 1,
                 },
                 beforeSend: function () {
@@ -277,6 +279,8 @@
                     shopadvisor_pid: $('#shopadvisor_pid').val(),
                     maxPerRetailer: $('#maxPerRetailer').val(),
                     maxLocationsPerRetailer: $('#maxLocationsPerRetailer').val(),
+                    locationId: $('#locationId').val(),
+                    retailerId: $('#retailerId').val(),
                     total_calculation: 0,
                 },
                 beforeSend: function () {

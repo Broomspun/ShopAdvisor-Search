@@ -127,6 +127,8 @@ class ShopAdvisor_Search_Admin {
                     'page'                      => $page_number,
                     'maxPerRetailer'            => $_POST['maxPerRetailer'],
                     'maxLocationsPerRetailer'   => $_POST['maxLocationsPerRetailer'],
+                    'retailerId'                => $_POST['retailerId'],
+                    'locationId'                => $_POST['locationId'],
 
                 );
                 if(isset($_POST['shopadvisor_q']) && $_POST['shopadvisor_q']!=='')
@@ -187,7 +189,8 @@ class ShopAdvisor_Search_Admin {
             'page'                      => $page_number,
             'maxPerRetailer'            => $_POST['maxPerRetailer'],
             'maxLocationsPerRetailer'   => $_POST['maxLocationsPerRetailer'],
-
+            'retailerId'                => $_POST['retailerId'],
+            'locationId'                => $_POST['locationId'],
         );
         if(isset($_POST['shopadvisor_q']) && $_POST['shopadvisor_q']!=='')
             $parameters['keywords'] = $_POST['shopadvisor_q'];
@@ -212,6 +215,8 @@ class ShopAdvisor_Search_Admin {
         $ch = curl_init();
 
         $url = $api_url . $getdata;
+
+        $data['url'] = $url;
 
         curl_setopt($ch, CURLOPT_URL, $url);
 

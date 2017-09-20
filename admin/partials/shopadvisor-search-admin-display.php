@@ -136,6 +136,21 @@ $product_categories = array(
                 </div>
 
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="retailerId">Retailer ID</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="text" id="retailerId" name="retailerId"
+                           placeholder="Comma separated list of retailerIds." >
+                    <p>Query filter to restrict results to a specific retailer</p>
+                </div>
+                <label class="col-sm-1 control-label" for="locationId">Location ID</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="text" id="locationId" name="locationId"
+                           placeholder="Comma separated list of locationIds.">
+                    <p>Query filter to restrict results to a specific retail location.</p>
+                </div>
+
+            </div>
             <hr/>
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="shopadvisor_submit"> </label>
