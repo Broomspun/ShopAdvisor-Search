@@ -353,6 +353,10 @@ class ShopAdvisor_Search_Admin {
 
         update_post_meta($post_id, '_product_url', $product['url']);
         update_post_meta($post_id, '_sku', $product['sku']);
+
+        if($product['sku']=='')
+            update_post_meta($post_id, '_sku', $product['externalproductid']);
+
         update_post_meta($post_id, '_externalproductid', $product['externalproductid']);
         update_post_meta($post_id, '_brand', $product['descriptionLong']);
         update_post_meta($post_id, '_manufacturerPartNumber', $product['manufacturerPartNumber']);
@@ -380,6 +384,57 @@ class ShopAdvisor_Search_Admin {
             wp_set_object_terms($post_id, $product['productCategory'], 'product_cat');
         }
 
+//===============  Upload Featured image ================
+        //
+        if (isset($product['large_image'])) {
+            $image_url = $product['large_image'];
+            $this->uploadImage($image_url, $user_id, $post_id, true);
+        }
+    }
+
+    /**
+     * Upload Feature image of a product.
+     *
+     * @since    1.0.0
+     */
+    private function uploadImage($image_url, $user_id, $post_id, $bFeatured = false){
+        if (!function_exists('wp_handle_upload')) {
+            require_once(ABSPATH . 'wp-admin/includes/media.php');
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+            require_once(ABSPATH . 'wp-admin/includes/file.php');
+        }
+
+        $upload_dir = wp_upload_dir();
+        $image_data = file_get_contents($image_url);
+
+        $filename = basename($image_url);
+
+        if (wp_mkdir_p($upload_dir['path']))
+            $file = $upload_dir['path'] . '/' . $filename;
+        else
+            $file = $upload_dir['basedir'] . '/' . $filename;
+
+        file_put_contents($file, $image_data);
+
+        $wp_filetype = wp_check_filetype($filename, null);
+
+
+        $attachment = array(
+            'post_mime_type' => $wp_filetype['type'],
+            'post_title' => $filename,
+            'post_content' => '',
+            'post_status' => 'inherit',
+            'post_author' => $user_id,
+        );
+
+        $attach_id = wp_insert_attachment($attachment, $file, $post_id);
+
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+        $attach_data = wp_generate_attachment_metadata($attach_id, $file);
+        wp_update_attachment_metadata($attach_id, $attach_data);
+        set_post_thumbnail($post_id, $attach_id);
+        return $attach_id;
     }
 
 	/**
