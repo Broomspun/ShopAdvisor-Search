@@ -144,7 +144,7 @@ $product_categories = array(
                 </div>
                 <div class="col-sm-2">
                 <a id="shopadvisor-csv-file" class="btn btn-default"
-                   href="http://shopfetti.com/wp-content/plugins/shopstyle-import/products.csv"
+                   href="<?php echo plugin_dir_url( __FILE__ ) ."../../public/products.csv";?>"
                    style="display: none; text-decoration: none;">Download products CSV </a>
                 </div>
             </div>

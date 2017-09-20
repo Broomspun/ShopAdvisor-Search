@@ -285,6 +285,19 @@ class ShopAdvisor_Search_Admin {
                 $data['product'][$id]['productCategory'] = $category;
         }
 
+        //Write csv
+        $csv_filename = plugin_dir_path(__FILE__) . DIRECTORY_SEPARATOR . '../public/products.csv';
+        $file = fopen($csv_filename, 'w');
+        $header = $this->getHeader();
+        // save the column headers
+        fputcsv($file, $header);
+
+        foreach ($items as $item) {
+            $this->writeCSV($data['product'][$item], $file);
+        }
+
+        fclose($file);
+
         $_SESSION = $data;
 
         echo json_encode($data);
@@ -366,7 +379,7 @@ class ShopAdvisor_Search_Admin {
         //Location info
         update_post_meta($post_id, '_location_id', $product['location_id']);
         update_post_meta($post_id, '_address', $product['address']);
-        update_post_meta($post_id, '_distance', $product['distance']);
+        update_post_meta($post_id, '_distance_from_use_location', $product['distance_from_use_location']);
         update_post_meta($post_id, '_hours', $product['hours']);
         update_post_meta($post_id, '_location_lat_long', $product['location_lat_long']);
         update_post_meta($post_id, '_phone', $product['phone']);
@@ -484,5 +497,56 @@ class ShopAdvisor_Search_Admin {
         wp_localize_script($this->plugin_name, 'ajax_parms', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 	}
+    /**
+     * Get header of csv file.
+     *
+     * @since    1.0.0
+     */
+	private function getHeader(){
+        $header = array("sku","title","short_description","long_description","lastUpdated","thumbnail","large_image","price","external_url",
+            "brand","externalproductid","location_id","manufacturerPartNumber", "barcode","Category","Product_Type","Currency","distance_from_use_location",
+            "distance_unit","address", "hours","location_lat_long","phone","retailer","timezone", "retLocationId",
+            "quantityText", "locName","availability_url"
+        );
+        return $header;
+    }
+    /**
+     * Write csv file.
+     *
+     * @since    1.0.0
+     */
+    private function writeCSV($product,$fp){
+        $items = array(
+            "sku"                           => $product['sku'],
+            "title"                         => $product['title'],
+            "short_description"             => $product['descriptionShort'],
+            "long_description"              => $product['descriptionLong'],
+            "lastUpdated"                   => $product['lastUpdated'],
+            "thumbnail"                     => $product['thumb_image'],
+            "large_image"                   => $product['large_image'],
+            "price"                         => $product['price'],"external_url",
+            "brand"                         => $product['brand'],
+            "externalproductid"             => $product['externalproductid'],
+            "location_id"                   => $product['location_id'],
+            "manufacturerPartNumber"        => $product['manufacturerPartNumber'],
+            "barcode"                       => $product['barcode'],
+            "Category"                      => $product['productCategory'],
+            "Product_Type"                  => $product['productType'],
+            "Currency"                      => $product['msrpCurrency'] ,
+            "distance_from_use_location"    => $product['distance_from_use_location'],
+            "distance_unit"                 => $product['distance_unit'],
+            "address"                       => implode('|', $product['address']),
+            "hours"                         => $product['hours'],
+            "location_lat_long"             => $product['location_lat_long'],
+            "phone"                         => $product['phone'],
+            "retailer"                      => implode('|', $product['retailer']),
+            "timezone"                      => $product['timezone'],
+            "retLocationId"                 => $product['retLocationId'],
+            "quantityText"                  => $product['quantityText'],
+            "locName"                       => $product['locName'],
+            "availability_url"              => $product['availability_url']
+        );
 
+        fputcsv($fp, $items);
+    }
 }
