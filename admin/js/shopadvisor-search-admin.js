@@ -30,18 +30,23 @@
 	 */
 
     $(function() {
-        function processResult(response) {
+        function processResult(response, bTotal) {
             $('button i.ajax_loading').removeClass('fa fa-refresh fa-spin fa-fw');
 
-            $('#total_products').val(response.totals);
-            $('.tablenav.top').removeClass('hidden').addClass('show');
-            $('span.displaying-num').html(response.totals+' items');
+            if(bTotal==0) {
+                $('#total_products').val(response.totals);
+                $('.tablenav.top').removeClass('hidden').addClass('show');
+                $('span.displaying-num').html(response.totals + ' items');
+            }
 
             var page_number = parseInt($('#pg_number').val())+1;
 
+            if(bTotal==0) {
+                $('.total-pages').html(response.pages);
+                $('#total_pages').val(response.pages);
+            }
+
             $('.current-page').val(page_number);
-            $('.total-pages').html(response.pages);
-            $('#total_pages').val(response.pages);
 
             if(page_number>1){
                 $('.first_sign').hide();
@@ -173,7 +178,7 @@
                 },
                 success: (function (res) {
                     $('button i.ajax_loading').removeClass('fa fa-refresh fa-spin fa-fw');
-                    processResult(res);
+                    processResult(res,0);
                     $('#shopadvisor-csv-file').fadeIn(1000);
                 })
 
@@ -192,6 +197,96 @@
                     $(this).prop('checked', false)
                 })
             }
+        });
+
+        $(document).on('click', '#shopadvisor_import_form #doaction',function (e) {
+            e.preventDefault();
+            var count = 0;
+            var $items=[];
+            $("#shopadvisor_import_form .ss_ckb").each(function () {
+                if($(this).is(":checked")){
+                    $items.push($(this).val());
+                    count++;
+                }
+            });
+            if(count==0){
+                alert('Please select products to import!');
+                return false;
+            }
+            if($('#shopadvisor_import_form #bulk-action-selector-top').val()==-1){
+                alert('Please select "Post to Woocommerce" option!');
+                return false;
+            }
+
+            //  uploding products
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: ajax_parms.ajaxurl,
+                data: {
+                    action: 'shopadvisor_upload_products',
+                    items: $items,
+                },
+                beforeSend: function () {
+                    $('button#doaction i.ajax_loading1').addClass('fa fa-spinner fa-pulse fa-fw');
+                    $('button#doaction span.button_title').text('Uploading...');
+
+                },
+                success: (function (response) {
+                    $('button#doaction i.ajax_loading1').removeClass('fa fa-spinner fa-pulse fa-fw');
+                    $('button#doaction span.button_title').text('Apply');
+                    alert(response.message);
+                })
+
+            });
+
+        });
+
+        $(document).on('click', '#shopadvisor_import_form a.next-page,#shopadvisor_import_form a.prev-page,#shopadvisor_import_form a.first-page,#shopadvisor_import_form a.last-page',function (e) {
+            e.preventDefault();
+            var page_number;
+
+            if(this.className=='next-page')
+                page_number = parseInt($('#shopadvisor_import_form #pg_number').val())+1;
+            else if(this.className=='prev-page')
+                page_number = parseInt($('#shopadvisor_import_form #pg_number').val())-1;
+            else if(this.className=='first-page')
+                page_number = 0;
+            else if(this.className=='last-page')
+                page_number = parseInt($('#shopadvisor_import_form #total_pages').val())-1;
+
+
+            $('#shopadvisor_import_form #pg_number').val(page_number);
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: ajax_parms.ajaxurl,
+                data: {
+                    action: 'shopadvisor_search_import_products',
+                    shopadvisor_ul: $('#shopadvisor_ul').val(),
+                    shopadvisor_import_nonce: $('#shopadvisor_import_nonce').val(),
+                    shopadvisor_apikey: $('#shopadvisor_apikey').val(),
+                    shopadvisor_ppp: $('#shopadvisor_ppp').val(),
+                    pg_number: page_number,
+                    shopadvisor_q: $('#shopadvisor_q').val(),
+                    category: $('#shopadvisor_categories').val(),
+                    shopadvisor_brand: $('#shopadvisor_brand').val(),
+                    shopadvisor_model: $('#shopadvisor_model').val(),
+                    shopadvisor_name: $('#shopadvisor_name').val(),
+                    shopadvisor_pid: $('#shopadvisor_pid').val(),
+                    maxPerRetailer: $('#maxPerRetailer').val(),
+                    maxLocationsPerRetailer: $('#maxLocationsPerRetailer').val(),
+                    total_calculation: 0,
+                },
+                beforeSend: function () {
+                    $('button i.ajax_loading').addClass('fa fa-refresh fa-spin fa-fw');
+                },
+                success: (function (response) {
+                    processResult(response,1);
+                })
+
+            });
         });
     });
 })( jQuery );

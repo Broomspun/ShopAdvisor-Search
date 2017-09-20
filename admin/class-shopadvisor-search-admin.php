@@ -167,12 +167,9 @@ class ShopAdvisor_Search_Admin {
                 $returnResult = curl_exec($ch);
                 curl_close($ch);
 
-                $all_data0 = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
+                $all_data = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
 
-                if($i==0)
-                    $all_data = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
-
-                $count = $all_data0['count'];
+                $count = $all_data['count'];
                 $this->totals  += $count;
                 $page_number++;
                 $i++;
@@ -233,7 +230,7 @@ class ShopAdvisor_Search_Admin {
         $all_data = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
 
         $data['totals'] = $this->totals;
-        $pages = ceil($data['totals'] / $_POST['shopadvisor_ppp']);
+        $pages = ceil($this->totals / $_POST['shopadvisor_ppp']);
         $data['pages'] = $pages;
 
         $all_results = $all_data['results'];
