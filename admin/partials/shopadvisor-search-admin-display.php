@@ -123,7 +123,7 @@ $product_categories = array(
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="maxPerRetailer">Max. Products per Retailer</label>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                     <input class="form-control" type="text" id="maxPerRetailer" name="maxPerRetailer"
                            placeholder="Pages per page" value="3">
                     <p>Controls the maximum number of results that will be returned for any one retailer</p>

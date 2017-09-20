@@ -89,6 +89,7 @@
                 var $location = '<p><Strong><em>Timezone: </em></Strong>'+value.timezone+'</p>';
                 $location += '<p><Strong><em>ShopAdvisor assigned location name: </em></Strong>'+value.locName+'</p>';
                 $location +='<p><Strong><em>Location ID: </em></Strong>'+value.location_id+'</p>'
+                $location +='<p><Strong><em>Phone: </em></Strong>'+value.phone+'</p>'
                 $location += '<p><Strong><em>Location Latitude & Longitude: </em></Strong>'+value.location_lat_long+'</p>'
                 $location += '<p><Strong><em>Hours: </em></Strong>'+value.hours+'</p>'
 
@@ -99,6 +100,8 @@
                         $location +='<p><strong><em>'+$loc_marks[index]+': </em></strong>'+vv+'</p>';
                     })
                 }
+                $location += '<p><Strong><em>Availability URL: </em></Strong><a target="_blank" href="'+value.availability_url+'">'+value.availability_url+'</a></p>'
+
 
                 $html += '<tr>'
                     +'<td class="col-sm-1 center-block "><input type="checkbox" class="ss_ckb" name="ss_gi[]" value="'+key+'"><img class="center-block img-responsive" src="'+value['thumb_image']+'"/></td>'
@@ -117,8 +120,6 @@
                     +'<p><Strong><em>Retailer: </em></Strong>'+$retailers+'</p>'
                     +'<td><p>'+value['price']+'</p><p>'+value['currency']+'</p></td>'
                     +'<td class="col-sm-4">'+$location
-                    +'<p><Strong><em>Location ID: </em></Strong>'+value.location_id+'</p>'
-                    +'<p><Strong><em>Location Latitude & Longitude: </em></Strong>'+value.location_lat_long+'</p>'
                     +'</td>'
                     +'<td>'+'<p>'+value['productCategory']+'</p></td>'
                     +'</tr>';
@@ -165,6 +166,7 @@
                     shopadvisor_pid: $('#shopadvisor_pid').val(),
                     maxPerRetailer: $('#maxPerRetailer').val(),
                     maxLocationsPerRetailer: $('#maxLocationsPerRetailer').val(),
+                    total_calculation: 1,
                 },
                 beforeSend: function () {
                     $('button i.ajax_loading').addClass('fa fa-refresh fa-spin fa-fw');

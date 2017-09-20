@@ -48,6 +48,15 @@ class ShopAdvisor_Search_Admin {
 	 */
 	private $apiKey;
 
+    /**
+     * key of ShopAdvisor Product Search API.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      string    $version    The current version of this plugin.
+     */
+    private $totals;
+
 
 
 	/**
@@ -62,6 +71,7 @@ class ShopAdvisor_Search_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->apiKey = 'zZBDgi_Zyl5_IMQNjuSn_OvL3XFS0S_4';
+		$this->totals =0;
 
         $settings['apiKey'] = $this->apiKey;
 
@@ -103,13 +113,81 @@ class ShopAdvisor_Search_Admin {
         $ul = $_POST['shopadvisor_ul'];
 
         $api_url = "https://api.shopadvisor.com/v3.0/products?";
+        $page_number = intval($_POST['pg_number'])+1;
+
+        $i=1;
+
+        if($_POST['total_calculation']==1){
+            do{
+                $parameters = array(
+                    "apikey"                    => $apikey,
+                    "requestorid"               => 'c788a854-9d3c-11e7-87fc-1f63daee3ac0',
+                    'userlocation'              => $ul,
+                    'pageSize'                  => $_POST['shopadvisor_ppp'],
+                    'page'                      => $page_number,
+                    'maxPerRetailer'            => $_POST['maxPerRetailer'],
+                    'maxLocationsPerRetailer'   => $_POST['maxLocationsPerRetailer'],
+
+                );
+                if(isset($_POST['shopadvisor_q']) && $_POST['shopadvisor_q']!=='')
+                    $parameters['keywords'] = $_POST['shopadvisor_q'];
+
+                if(isset($_POST['category']) && $_POST['category']!='-1')
+                    $parameters['productCategory'] = $_POST['category'];
+
+                if(isset($_POST['shopadvisor_brand']) && $_POST['shopadvisor_brand']!='')
+                    $parameters['brand'] = $_POST['shopadvisor_brand'];
+
+                if(isset($_POST['shopadvisor_model']) && $_POST['shopadvisor_model']!='')
+                    $parameters['model'] = $_POST['shopadvisor_model'];
+
+                if(isset($_POST['shopadvisor_name']) && $_POST['shopadvisor_name']!='')
+                    $parameters['name'] = $_POST['shopadvisor_name'];
+
+                if(isset($_POST['shopadvisor_pid']) && $_POST['shopadvisor_pid']!='')
+                    $parameters['productId,'] = $_POST['shopadvisor_pid'];
+
+                $getdata = http_build_query($parameters);
+
+                $ch = curl_init();
+
+                $url = $api_url . $getdata;
+
+                curl_setopt($ch, CURLOPT_URL, $url);
+
+                $options = array(
+                    CURLOPT_URL => $url,
+                    CURLOPT_RETURNTRANSFER => 1,
+                    CURLOPT_TIMEOUT => 10,
+                    CURLOPT_FOLLOWLOCATION => 1,
+                    CURLOPT_CONNECTTIMEOUT => 10,
+                    CURLOPT_DNS_USE_GLOBAL_CACHE => 0
+                );
+                curl_setopt_array($ch, $options);
+                $returnResult = curl_exec($ch);
+                curl_close($ch);
+
+                $all_data0 = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
+
+                if($i==0)
+                    $all_data = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
+
+                $count = $all_data0['count'];
+                $this->totals  += $count;
+                $page_number++;
+                $i++;
+
+            }while($count==$_POST['shopadvisor_ppp']);
+        }
+
+        $page_number = intval($_POST['pg_number'])+1;
 
         $parameters = array(
             "apikey"                    => $apikey,
             "requestorid"               => 'c788a854-9d3c-11e7-87fc-1f63daee3ac0',
             'userlocation'              => $ul,
             'pageSize'                  => $_POST['shopadvisor_ppp'],
-            'page'                      => intval($_POST['pg_number'])+1,
+            'page'                      => $page_number,
             'maxPerRetailer'            => $_POST['maxPerRetailer'],
             'maxLocationsPerRetailer'   => $_POST['maxLocationsPerRetailer'],
 
@@ -154,7 +232,7 @@ class ShopAdvisor_Search_Admin {
 
         $all_data = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
 
-        $data['totals'] = $all_data['count'];
+        $data['totals'] = $this->totals;
         $pages = ceil($data['totals'] / $_POST['shopadvisor_ppp']);
         $data['pages'] = $pages;
 
