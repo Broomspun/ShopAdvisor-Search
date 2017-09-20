@@ -181,5 +181,17 @@
 
         });
 
+        $(document).on('click', '#shopadvisor_import_form #cb-select-all-1', function () {
+            if($(this).is(":checked")) {
+                $("#shopadvisor_import_form .ss_ckb").each(function () {
+                    $(this).prop('checked', true)
+                })
+            }
+            else {
+                $("#shopadvisor_import_form .ss_ckb").each(function () {
+                    $(this).prop('checked', false)
+                })
+            }
+        });
     });
 })( jQuery );
