@@ -303,7 +303,84 @@ class ShopAdvisor_Search_Admin {
         require_once ('partials/shopadvisor-search-admin-display.php');
     }
 
+    /**
+     * Upload products into woocommerce store.
+     *
+     * @since    1.0.0
+     */
+    public function UploadProducts(){
+        set_time_limit(0);
+        session_start();
 
+        $products = $_SESSION['product'];
+        $items = $_POST['items'];
+
+        $data = array();
+
+        foreach ($items as $item) {
+            $this->write_product($products[$item]);
+            $data['input'] = $products[$item];
+        }
+
+        $data['message'] = 'Uploaded succesufully!';
+        echo json_encode($data);
+        wp_die();
+    }
+
+    private function write_product($product){
+        $user_id = wp_get_current_user()->ID;
+        $title = $product['title'];
+        $post = array(
+            'post_author' => $user_id,
+            'post_content' => $product['descriptionLong'],
+            'post_status' => "publish",
+            'post_title' => $title,
+            'post_parent' => '',
+            'post_type' => "product",
+            'post_excerpt' => $product['descriptionShort'],
+        );
+
+        // Write the product into the database
+        $post_id = wp_insert_post($post, true);
+        wp_set_object_terms($post_id, 'external', 'product_type');
+
+        update_post_meta($post_id, '_visibility', 'visible');
+        update_post_meta($post_id, '_stock_status', 'instock');
+        update_post_meta($post_id, 'total_sales', '0');
+        update_post_meta($post_id, '_downloadable', 'yes');
+        update_post_meta($post_id, '_virtual', 'yes');
+        update_post_meta($post_id, '_regular_price', $product['price']);
+
+        update_post_meta($post_id, '_product_url', $product['url']);
+        update_post_meta($post_id, '_sku', $product['sku']);
+        update_post_meta($post_id, '_externalproductid', $product['externalproductid']);
+        update_post_meta($post_id, '_brand', $product['descriptionLong']);
+        update_post_meta($post_id, '_manufacturerPartNumber', $product['manufacturerPartNumber']);
+        update_post_meta($post_id, '_barcode', $product['barcode']);
+        update_post_meta($post_id, '_productType', $product['productType']);
+
+        //Location info
+        update_post_meta($post_id, '_location_id', $product['location_id']);
+        update_post_meta($post_id, '_address', $product['address']);
+        update_post_meta($post_id, '_distance', $product['distance']);
+        update_post_meta($post_id, '_hours', $product['hours']);
+        update_post_meta($post_id, '_location_lat_long', $product['location_lat_long']);
+        update_post_meta($post_id, '_phone', $product['phone']);
+        update_post_meta($post_id, '_timezone', $product['timezone']);
+        update_post_meta($post_id, '_retLocationId', $product['retLocationId']);
+        update_post_meta($post_id, '_quantityText', $product['quantityText']);
+        update_post_meta($post_id, '_locName', $product['locName']);
+        update_post_meta($post_id, '_availability', $product['availability']);
+
+        //Retailer Info
+        update_post_meta($post_id, '_retailer', $product['retailer']);
+
+        //Create category and Assign
+        if($product['productCategory']!=''){
+            wp_set_object_terms($post_id, $product['productCategory'], 'product_cat');
+        }
+
+    }
 
 	/**
 	 * Register the stylesheets for the admin area.

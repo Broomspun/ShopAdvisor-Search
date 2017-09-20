@@ -158,6 +158,7 @@ class ShopAdvisor_Search {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action('wp_ajax_shopadvisor_search_import_products', $plugin_admin, 'getProductsFromShopAdvisor');
+		$this->loader->add_action('wp_ajax_shopadvisor_upload_products', $plugin_admin, 'UploadProducts');
 
 	}
 
