@@ -84,9 +84,9 @@
 
                 var $retailers='';
                 if(value.retailer!==undefined){
-                    $retailers += '<sp><span>id:&nbsp;'+value.retailer.id+'</span>&nbsp;&nbsp;';
-                    $retailers += '<span>name:&nbsp;'+value.retailer.name+'</span>&nbsp;&nbsp;';
-                    $retailers += '<span><img src="'+value.retailer.logo+'"/></span>';
+                    $retailers += '<p><strong><em>id:&nbsp;</em></strong>'+value.retailer.id+'</p>';
+                    $retailers += '<p><strong><em>name:&nbsp;</em></strong>'+value.retailer.name+'</p>';
+                    $retailers += '<p><img src="'+value.retailer.logo+'"/></p>';
                 }
 
                 $retailers +='<p><strong><em>Retailer assigned location id: </em></strong>&nbsp;'+value.retLocationId+'</p>'
@@ -123,7 +123,7 @@
                     +'<p><strong><em>External Link: </em></strong><a target="_blank" href="'+value.url+'">'+value['url']+'</a></p>'
                     +'<p><Strong><em>Availability: </em></Strong>'+value['quantityText']+'</p>'
                     +'<p><Strong><em>Last Updated: </em></Strong>'+value.lastUpdated+'</p>'
-                    +'<td class="col-sm-3"><p><Strong><em>Retailer: </em></Strong>'+$retailers+'</p></td>'
+                    +'<td class="col-sm-3"><Strong><em>Retailer: </em></Strong>'+$retailers+'</td>'
                     +'<td class="col-sm-3">'+$location
                     +'</td>'
                     +'<td>'+'<p>'+value['productCategory']+'</p></td>'

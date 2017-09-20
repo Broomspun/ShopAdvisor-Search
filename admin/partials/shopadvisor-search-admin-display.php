@@ -86,7 +86,7 @@ $product_categories = array(
                 <label class="col-sm-1 control-label" for="shopadvisor_categories">Brand</label>
                 <div class="col-sm-3">
                     <input class="form-control" type="text" id="shopadvisor_brand" name="shopadvisor_brand"
-                           placeholder="Logitech"">
+                           placeholder="Ex: Logitech"">
 <!--                    <select class="form-control" type="text" id="shopadvisor_brands" name="shopadvisor_brands">-->
 <!--                        <option value="-1">Choose any Brand</option>-->
 <!--                    </select>-->
@@ -97,13 +97,13 @@ $product_categories = array(
                 <label class="col-sm-2 control-label" for="shopadvisor_categories">Product Model</label>
                 <div class="col-sm-3">
                     <input class="form-control" type="text" id="shopadvisor_model" name="shopadvisor_model"
-                           placeholder="M310"">
+                           placeholder="Ex: M310"">
                     <p>Product model to search for.<em>Accepts "!" as a negator.</em></p>
                 </div>
                 <label class="col-sm-1 control-label" for="shopadvisor_name">Product Name</label>
                 <div class="col-sm-3">
                     <input class="form-control" type="text" id="shopadvisor_name" name="shopadvisor_name"
-                           placeholder="Logitech Mouse M310">
+                           placeholder="Ex: Logitech Mouse M310">
                     <p>Product name to search for.<em>Accepts "!" as a negator.</em></p>
                 </div>
 
@@ -117,7 +117,7 @@ $product_categories = array(
                 <label class="col-sm-2 control-label" for="shopadvisor_pid">Product ID</label>
                 <div class="col-sm-3">
                     <input class="form-control" type="text" id="shopadvisor_pid" name="shopadvisor_pid"
-                           placeholder="00097855066237">
+                           placeholder="ex: 00097855066237">
                 </div>
 
             </div>
