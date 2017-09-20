@@ -121,6 +121,21 @@ $product_categories = array(
                 </div>
 
             </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="maxPerRetailer">Max. Products per Retailer</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="text" id="maxPerRetailer" name="maxPerRetailer"
+                           placeholder="Pages per page" value="3">
+                    <p>Controls the maximum number of results that will be returned for any one retailer</p>
+                </div>
+                <label class="col-sm-2 control-label" for="maxLocationsPerRetailer">Max. Locations Per Retailer</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="text" id="maxLocationsPerRetailer" name="maxLocationsPerRetailer"
+                           value="1">
+                    <p>Controls the maximum number of store locations that will be returned for any one retailer.</p>
+                </div>
+
+            </div>
             <hr/>
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="shopadvisor_submit"> </label>

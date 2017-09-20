@@ -105,15 +105,32 @@ class ShopAdvisor_Search_Admin {
         $api_url = "https://api.shopadvisor.com/v3.0/products?";
 
         $parameters = array(
-            "apikey" => $apikey,
-            "requestorid" => 'c788a854-9d3c-11e7-87fc-1f63daee3ac0',
-            'userlocation' => $ul,
+            "apikey"                    => $apikey,
+            "requestorid"               => 'c788a854-9d3c-11e7-87fc-1f63daee3ac0',
+            'userlocation'              => $ul,
+            'pageSize'                  => $_POST['shopadvisor_ppp'],
+            'page'                      => intval($_POST['pg_number'])+1,
+            'maxPerRetailer'            => $_POST['maxPerRetailer'],
+            'maxLocationsPerRetailer'   => $_POST['maxLocationsPerRetailer'],
+
         );
         if(isset($_POST['shopadvisor_q']) && $_POST['shopadvisor_q']!=='')
             $parameters['keywords'] = $_POST['shopadvisor_q'];
 
         if(isset($_POST['category']) && $_POST['category']!='-1')
             $parameters['productCategory'] = $_POST['category'];
+
+        if(isset($_POST['shopadvisor_brand']) && $_POST['shopadvisor_brand']!='')
+            $parameters['brand'] = $_POST['shopadvisor_brand'];
+
+        if(isset($_POST['shopadvisor_model']) && $_POST['shopadvisor_model']!='')
+            $parameters['model'] = $_POST['shopadvisor_model'];
+
+        if(isset($_POST['shopadvisor_name']) && $_POST['shopadvisor_name']!='')
+            $parameters['name'] = $_POST['shopadvisor_name'];
+
+        if(isset($_POST['shopadvisor_pid']) && $_POST['shopadvisor_pid']!='')
+            $parameters['productId,'] = $_POST['shopadvisor_pid'];
 
         $getdata = http_build_query($parameters);
 
@@ -137,8 +154,9 @@ class ShopAdvisor_Search_Admin {
 
         $all_data = json_decode($returnResult, true)['ShopAdvisorAPIResult'];
 
-        $data['count'] = $all_data['count'];
-        $data['url'] = $url;
+        $data['totals'] = $all_data['count'];
+        $pages = ceil($data['totals'] / $_POST['shopadvisor_ppp']);
+        $data['pages'] = $pages;
 
         $all_results = $all_data['results'];
         if(isset($all_data['request']['productCategory']))
@@ -146,52 +164,50 @@ class ShopAdvisor_Search_Admin {
 
         $items = array();
 
-        $data['raw'] = $all_results;
-
         foreach ($all_results as $result){
             $product = $result['SearchResult'];
             $id = $product['product']['id'];
             $items[] = $id;
 
-            $data[$id]['lastUpdated'] = $product['lastUpdated'];
-            $data[$id]['thumb_image'] = $product['product']['images'][0]['ImageInfo']['link'];
-            $data[$id]['large_image'] = $product['product']['images'][1]['ImageInfo']['link'];
-            $data[$id]['title'] = $product['product']['name'];
-            $data[$id]['descriptionLong'] = $product['product']['descriptionLong'];
-            $data[$id]['descriptionShort'] = $product['product']['descriptionShort'];
-            $data[$id]['url'] = $product['product']['url'];
-            $data[$id]['externalproductid'] = $product['product']['externalproductid'];
-            $data[$id]['sku'] = $product['product']['sku'];
-            $data[$id]['brand'] = $product['product']['brand'];
-            $data[$id]['manufacturerPartNumber'] = $product['product']['manufacturerPartNumber'];
-            $data[$id]['barcode'] = $product['product']['barcode'];
-            $data[$id]['productCategory'] = implode(',',$product['product']['productCategory']);
-            $data[$id]['productType'] = implode(',',$product['product']['productType']);
-            $data[$id]['msrpCurrency'] = $product['product']['msrpCurrency'];
-            $data[$id]['distance'] = $product['distance']['distance'];
-            $data[$id]['distance_unit'] = $product['distance']['units'];
-            $data[$id]['price'] = $product['price'];
-            $data[$id]['currency'] = $product['currency'];
-            $data[$id]['location_id'] = $product['location']['id'];
-            $data[$id]['address'] = array($product['location']['address']['country'],$product['location']['address']['city'],
+            $data['product'][$id]['lastUpdated'] = $product['lastUpdated'];
+            $data['product'][$id]['thumb_image'] = $product['product']['images'][0]['ImageInfo']['link'];
+            $data['product'][$id]['large_image'] = $product['product']['images'][1]['ImageInfo']['link'];
+            $data['product'][$id]['title'] = $product['product']['name'];
+            $data['product'][$id]['descriptionLong'] = $product['product']['descriptionLong'];
+            $data['product'][$id]['descriptionShort'] = $product['product']['descriptionShort'];
+            $data['product'][$id]['url'] = $product['product']['url'];
+            $data['product'][$id]['externalproductid'] = $product['product']['externalproductid'];
+            $data['product'][$id]['sku'] = $product['product']['sku'];
+            $data['product'][$id]['brand'] = $product['product']['brand'];
+            $data['product'][$id]['manufacturerPartNumber'] = $product['product']['manufacturerPartNumber'];
+            $data['product'][$id]['barcode'] = $product['product']['barcode'];
+            $data['product'][$id]['productCategory'] = implode(',',$product['product']['productCategory']);
+            $data['product'][$id]['productType'] = implode(',',$product['product']['productType']);
+            $data['product'][$id]['msrpCurrency'] = $product['product']['msrpCurrency'];
+            $data['product'][$id]['distance'] = $product['distance']['distance'];
+            $data['product'][$id]['distance_unit'] = $product['distance']['units'];
+            $data['product'][$id]['price'] = $product['price'];
+            $data['product'][$id]['currency'] = $product['currency'];
+            $data['product'][$id]['location_id'] = $product['location']['id'];
+            $data['product'][$id]['address'] = array($product['location']['address']['country'],$product['location']['address']['city'],
                 $product['location']['address']['address1'],$product['location']['address']['state'],$product['location']['address']['postal']);
-            $data[$id]['distance'] = $product['location']['distance']['distance'];
-            $data[$id]['hours'] = $product['location']['hours'];
-            $data[$id]['location_lat_long'] = implode(',', array($product['location']['location']['latitude'],
+            $data['product'][$id]['distance'] = $product['location']['distance']['distance'];
+            $data['product'][$id]['hours'] = $product['location']['hours'];
+            $data['product'][$id]['location_lat_long'] = implode(',', array($product['location']['location']['latitude'],
                                     $product['location']['location']['longitude'],));
-            $data[$id]['phone'] = $product['location']['phone'];
-            $data[$id]['retailer'] = array('id'=>$product['location']['retailer']['id'],
+            $data['product'][$id]['phone'] = $product['location']['phone'];
+            $data['product'][$id]['retailer'] = array('id'=>$product['location']['retailer']['id'],
                 'name'=>$product['location']['retailer']['name'],
                 'logo'=>$product['location']['retailer']['logo'],
                 'logosq'=>$product['location']['retailer']['logosq'],);
-            $data[$id]['timezone'] = $product['location']['timezone'];
-            $data[$id]['retLocationId'] = $product['location']['retLocationId'];
-            $data[$id]['locName'] = $product['locName'];
-            $data[$id]['locName'] = $product['locName'];
-            $data[$id]['availability_url'] = $product['availability'];
+            $data['product'][$id]['timezone'] = $product['location']['timezone'];
+            $data['product'][$id]['retLocationId'] = $product['location']['retLocationId'];
+            $data['product'][$id]['quantityText'] = $product['quantityText'];
+            $data['product'][$id]['locName'] = $product['locName'];
+            $data['product'][$id]['availability_url'] = $product['availability'];
 
-            if($data[$id]['productCategory']==null)
-                $data[$id]['productCategory'] = $category;
+            if($data['product'][$id]['productCategory']==null)
+                $data['product'][$id]['productCategory'] = $category;
         }
 
         $_SESSION = $data;
